@@ -8,7 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   // Define API base URL depending on environment
-  const apiBaseUrl = 'http://localhost:5000/api';
+  const apiBaseUrl = 'https://sevasetu-kchf.onrender.com/api';
 
   useEffect(() => {
     // Check local storage for user token
