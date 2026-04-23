@@ -9,6 +9,7 @@ import {
   ClipboardList,
   ChartNoAxesCombined,
   BookOpenText,
+  Info,
   UserRound,
   LogIn,
   UserPlus,
@@ -23,8 +24,9 @@ const Navbar = () => {
     { label: 'Home', href: '/', icon: Home },
     { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard, protected: true },
     { label: 'Requirements', href: '/requirements', icon: ClipboardList, donorOnly: true },
-    { label: 'Impact', href: '/#impact', icon: ChartNoAxesCombined },
-    { label: 'Resources', href: '/#resources', icon: BookOpenText },
+    { label: 'Impact', href: '/impact', icon: ChartNoAxesCombined },
+    { label: 'Resources', href: '/resources', icon: BookOpenText },
+    { label: 'About Us', href: '/about', icon: Info },
   ];
 
   const isActive = (href) => {

@@ -13,6 +13,9 @@ import Dashboard from './pages/Dashboard';
 import RequirementsPage from './pages/RequirementsPage';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
+import Impact from './pages/Impact';
+import Resources from './pages/Resources';
+import About from './pages/About';
 
 function App() {
   return (
@@ -34,6 +37,9 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/impact" element={<Impact />} />
+            <Route path="/resources" element={<Resources />} />
+            <Route path="/about" element={<About />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/terms" element={<TermsOfService />} />
             
