@@ -54,10 +54,16 @@ const Resources = () => {
         <div className="mt-6 grid gap-4 md:grid-cols-2">
           {resourceCards.map((card) => {
             const Icon = card.icon;
+            const iconMap = {
+              'Donor Starter Guide': '💰',
+              'NGO Requirement Playbook': '📋',
+              'Verification & Trust': '🔐',
+              'Support & Troubleshooting': '🛠️',
+            };
             return (
-              <article key={card.title} className="rounded-2xl border border-white/8 bg-white/5 p-5">
-                <div className="mb-3 inline-flex rounded-xl bg-cyan-500/12 p-2.5 text-cyan-300">
-                  <Icon size={18} />
+              <article key={card.title} className="rounded-2xl border border-white/8 bg-white/5 p-5 overflow-hidden hover:border-cyan-500/30 transition-all duration-300 hover:shadow-lg hover:shadow-cyan-500/10">
+                <div className="h-24 rounded-lg bg-gradient-to-br from-cyan-500/15 to-teal-500/10 flex items-center justify-center text-5xl mb-4 border border-white/8">
+                  {iconMap[card.title]}
                 </div>
                 <h2 className="text-lg font-semibold text-text">{card.title}</h2>
                 <p className="mt-2 text-sm leading-6 text-textMuted">{card.description}</p>

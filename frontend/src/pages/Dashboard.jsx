@@ -104,18 +104,34 @@ const Dashboard = () => {
             <h2 className="text-xl font-semibold border-b border-slate-700 pb-2">Your Active Requests</h2>
             {data && data.length > 0 ? (
               <div className="grid gap-4">
-                {data.map(req => (
-                  <div key={req._id} className="card p-4 flex justify-between items-center border border-slate-700 hover:border-slate-500 transition-colors">
-                    <div>
-                      <h3 className="font-semibold text-lg">{req.item}</h3>
-                      <p className="text-sm text-textMuted">Urgency: <span className={`${req.urgency === 'High' ? 'text-red-400' : 'text-yellow-400'}`}>{req.urgency}</span></p>
+                {data.map(req => {
+                  const itemName = (req.item || '').toLowerCase();
+                  return (
+                    <div key={req._id} className="card p-4 flex flex-col md:flex-row md:justify-between md:items-center gap-4 border border-slate-700 hover:border-slate-500 transition-all hover:shadow-lg">
+                      <div className="h-24 w-24 rounded-lg bg-gradient-to-br from-teal-500/15 to-cyan-500/10 flex items-center justify-center text-4xl border border-white/10 flex-shrink-0">
+                        {itemName.includes('blanket') && '🛏️'}
+                        {itemName.includes('food') && '🍽️'}
+                        {itemName.includes('medical') && '🏥'}
+                        {itemName.includes('education') && '📚'}
+                        {itemName.includes('clothing') && '👕'}
+                        {itemName.includes('kit') && '🎁'}
+                        {itemName.includes('book') && '📖'}
+                        {!itemName.includes('blanket') && !itemName.includes('food') && !itemName.includes('medical') && !itemName.includes('education') && !itemName.includes('clothing') && !itemName.includes('kit') && !itemName.includes('book') && '📦'}
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-lg">{req.item}</h3>
+                        <p className="text-sm text-textMuted">Urgency: <span className={`${req.urgency === 'High' ? 'text-red-400' : 'text-yellow-400'}`}>{req.urgency}</span></p>
+                        <div className="w-full bg-slate-800 rounded-full h-2 mt-2">
+                          <div className="bg-gradient-to-r from-cyan-300 to-teal-400 h-2 rounded-full" style={{ width: `${(req.quantity_fulfilled / req.quantity_required) * 100}%` }}></div>
+                        </div>
+                      </div>
+                      <div className="text-right flex-shrink-0">
+                        <div className="text-2xl font-bold">{req.quantity_fulfilled} / {req.quantity_required}</div>
+                        <div className="text-xs text-slate-400">Fulfilled</div>
+                      </div>
                     </div>
-                    <div className="text-right">
-                      <div className="text-2xl font-bold">{req.quantity_fulfilled} / {req.quantity_required}</div>
-                      <div className="text-xs text-slate-400">Fulfilled</div>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             ) : <p className="text-textMuted">You haven't posted any requirements yet.</p>}
           </div>
@@ -127,22 +143,35 @@ const Dashboard = () => {
           <h2 className="text-xl font-semibold border-b border-slate-700 pb-2">Your Donation History</h2>
           {data && data.length > 0 ? (
             <div className="grid gap-4 md:grid-cols-2">
-              {data.map(donation => (
-                <div key={donation._id} className="card p-4 flex flex-col space-y-2 border border-slate-700">
-                  <div className="flex justify-between">
-                    <span className="font-semibold">{donation.requirementId?.item || 'Unknown Item'}</span>
-                    <span className={`px-2 py-1 text-xs rounded-full ${donation.status === 'Delivered' ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
-                      {donation.status}
-                    </span>
+              {data.map(donation => {
+                const itemName = (donation.requirementId?.item || 'Unknown Item').toLowerCase();
+                const statusColor = donation.status === 'Delivered' ? 'from-green-500/15 to-emerald-500/10' : 'from-amber-500/15 to-orange-500/10';
+                return (
+                  <div key={donation._id} className="card p-4 flex flex-col space-y-2 border border-slate-700 hover:border-slate-500 transition-all">
+                    <div className={`h-32 rounded-lg bg-gradient-to-br ${statusColor} flex items-center justify-center text-5xl border border-white/10 mb-2`}>
+                      {itemName.includes('blanket') && '🛏️'}
+                      {itemName.includes('food') && '🍽️'}
+                      {itemName.includes('medical') && '🏥'}
+                      {itemName.includes('education') && '📚'}
+                      {itemName.includes('clothing') && '👕'}
+                      {itemName.includes('kit') && '🎁'}
+                      {!itemName.includes('blanket') && !itemName.includes('food') && !itemName.includes('medical') && !itemName.includes('education') && !itemName.includes('clothing') && !itemName.includes('kit') && '📦'}
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="font-semibold">{donation.requirementId?.item || 'Unknown Item'}</span>
+                      <span className={`px-2 py-1 text-xs rounded-full ${donation.status === 'Delivered' ? 'bg-green-500/20 text-green-400' : 'bg-yellow-500/20 text-yellow-400'}`}>
+                        {donation.status}
+                      </span>
+                    </div>
+                    <div className="text-sm text-textMuted">
+                      Quantity Pledged: <span className="text-text font-bold">{donation.quantity_pledged}</span>
+                    </div>
+                    <div className="text-xs text-slate-500 mt-2">
+                      Date: {new Date(donation.createdAt).toLocaleDateString()}
+                    </div>
                   </div>
-                  <div className="text-sm text-textMuted">
-                    Quantity Pledged: <span className="text-text font-bold">{donation.quantity_pledged}</span>
-                  </div>
-                  <div className="text-xs text-slate-500 mt-2">
-                    Date: {new Date(donation.createdAt).toLocaleDateString()}
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           ) : <p className="text-textMuted">You haven't made any pledges yet. Visit the Requirements page to start!</p>}
         </div>
