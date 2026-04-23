@@ -1,11 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const Dashboard = () => {
   const { user, apiBaseUrl } = useContext(AuthContext);
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
   // NGO Specific state
   const [newItem, setNewItem] = useState({ item: '', quantity_required: '', urgency: 'Medium' });
@@ -38,13 +40,17 @@ const Dashboard = () => {
 
   const handleCreateRequirement = async (e) => {
     e.preventDefault();
+    setSubmitting(true);
     try {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
       const res = await axios.post(`${apiBaseUrl}/requirements`, newItem, config);
       setData([...data, res.data]);
       setNewItem({ item: '', quantity_required: '', urgency: 'Medium' });
+      toast.success('Requirement posted successfully.');
     } catch (error) {
-      alert("Error creating requirement");
+      toast.error(error.response?.data?.message || 'Error creating requirement.');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -88,7 +94,9 @@ const Dashboard = () => {
                   <option value="Low">Low</option>
                 </select>
               </div>
-              <button type="submit" className="btn-primary w-full">Ask for Help</button>
+              <button type="submit" className="btn-primary w-full" disabled={submitting}>
+                {submitting ? 'Posting...' : 'Ask for Help'}
+              </button>
             </form>
           </div>
 
