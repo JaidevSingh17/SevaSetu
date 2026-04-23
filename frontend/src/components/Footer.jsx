@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { HeartHandshake, Mail, ShieldCheck, Phone, MapPin, ArrowUpRight } from 'lucide-react';
+import { HeartHandshake, Mail, ShieldCheck, MapPin, ArrowUpRight } from 'lucide-react';
 
 const Footer = () => {
   return (
@@ -29,7 +29,9 @@ const Footer = () => {
               <a href="/#" className="text-textMuted transition-colors hover:text-text">Home</a>
               <a href="/#features" className="text-textMuted transition-colors hover:text-text">Features</a>
               <a href="/#flow" className="text-textMuted transition-colors hover:text-text">How It Works</a>
-              <a href="/#impact" className="text-textMuted transition-colors hover:text-text">Impact</a>
+              <Link to="/impact" className="text-textMuted transition-colors hover:text-text">Impact</Link>
+              <Link to="/resources" className="text-textMuted transition-colors hover:text-text">Resources</Link>
+              <Link to="/about" className="text-textMuted transition-colors hover:text-text">About Us</Link>
               <a href="/#faq" className="text-textMuted transition-colors hover:text-text">FAQ</a>
             </div>
           </div>
@@ -51,13 +53,9 @@ const Footer = () => {
                 <Mail size={14} className="text-cyan-300" />
                 support@sevasetu.org
               </a>
-              <a href="tel:+919999999999" className="inline-flex items-center gap-2 transition-colors hover:text-text">
-                <Phone size={14} className="text-cyan-300" />
-                +91 99999 99999
-              </a>
               <p className="inline-flex items-start gap-2">
                 <MapPin size={14} className="mt-0.5 text-cyan-300" />
-                Community Operations Hub, India
+                MIET COLLEGE
               </p>
               <a
                 href="https://mail.google.com/mail/?view=cm&to=support@sevasetu.org"

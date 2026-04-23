@@ -7,7 +7,11 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+  const defaultApiBaseUrl =
+    typeof window !== 'undefined'
+      ? `http://${window.location.hostname}:5000/api`
+      : 'http://localhost:5000/api';
+  const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || defaultApiBaseUrl;
 
   useEffect(() => {
     // Check local storage for user token

@@ -56,8 +56,37 @@ const RequirementsPage = () => {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {requirements.map(req => {
           const remaining = req.quantity_required - req.quantity_fulfilled;
+          const categoryColors = {
+            'blanket': 'from-blue-500/20 to-cyan-500/10',
+            'food': 'from-amber-500/20 to-orange-500/10',
+            'medical': 'from-red-500/20 to-pink-500/10',
+            'education': 'from-purple-500/20 to-violet-500/10',
+            'clothing': 'from-green-500/20 to-emerald-500/10',
+          };
+          const itemLower = req.item.toLowerCase();
+          let color = 'from-teal-500/20 to-cyan-500/10';
+          for (const [key, val] of Object.entries(categoryColors)) {
+            if (itemLower.includes(key)) {
+              color = val;
+              break;
+            }
+          }
+          
           return (
             <div key={req._id} className="card flex flex-col hover:border-slate-500 transition-all duration-300 shadow hover:shadow-xl hover:shadow-primary/5">
+              <div className={`h-40 rounded-xl bg-gradient-to-br ${color} flex items-center justify-center mb-4 border border-white/10 overflow-hidden relative`}>
+                <div className="text-6xl text-center" style={{opacity: 0.3}}>
+                  {itemLower.includes('blanket') && '🛏️'}
+                  {itemLower.includes('food') && '🍽️'}
+                  {itemLower.includes('medical') && '🏥'}
+                  {itemLower.includes('education') && '📚'}
+                  {itemLower.includes('clothing') && '👕'}
+                  {itemLower.includes('kit') && '🎁'}
+                  {itemLower.includes('book') && '📖'}
+                  {!itemLower.includes('blanket') && !itemLower.includes('food') && !itemLower.includes('medical') && !itemLower.includes('education') && !itemLower.includes('clothing') && !itemLower.includes('kit') && !itemLower.includes('book') && '📦'}
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+              </div>
               <div className="flex justify-between items-start mb-4">
                 <h3 className="text-xl font-bold text-slate-100">{req.item}</h3>
                 <span className={`px-2 py-1 text-xs font-semibold rounded-full ${
