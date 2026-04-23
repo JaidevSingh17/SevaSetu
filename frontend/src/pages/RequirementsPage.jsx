@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../contexts/AuthContext';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 const RequirementsPage = () => {
   const { user, apiBaseUrl } = useContext(AuthContext);
@@ -33,13 +34,13 @@ const RequirementsPage = () => {
         quantity_pledged: Number(pledgeData.quantity)
       }, config);
       
-      alert('Pledge successful! Thank you.');
+      toast.success('Pledge successful. Thank you for supporting this request.');
       setPledgeData({ reqId: null, quantity: '' });
       // Refresh to get updated quantities
       const res = await axios.get(`${apiBaseUrl}/requirements`);
       setRequirements(res.data);
     } catch (error) {
-      alert("Error pledging donation: " + (error.response?.data?.message || error.message));
+      toast.error(error.response?.data?.message || 'Unable to complete your pledge right now.');
     }
   };
 

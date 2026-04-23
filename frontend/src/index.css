@@ -1,32 +1,114 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #2563eb;
-  --color-secondary: #facc15;
-  --color-accent: #10b981;
-  --color-background: #0f172a;
-  --color-surface: #1e293b;
-  --color-text: #f8fafc;
-  --color-textMuted: #94a3b8;
+  --color-primary: #0f766e;
+  --color-secondary: #f59e0b;
+  --color-accent: #0ea5a4;
+  --color-background: #0b1220;
+  --color-surface: #142033;
+  --color-surfaceElevated: #1a2a42;
+  --color-text: #edf5ff;
+  --color-textMuted: #9cb4cf;
 }
 
 @layer base {
   body {
-    @apply bg-background text-text font-sans antialiased;
+    @apply bg-background text-text antialiased;
+    font-family: 'DM Sans', sans-serif;
+    background-image: radial-gradient(circle at 15% 5%, rgba(14, 165, 164, 0.18), transparent 36%), radial-gradient(circle at 85% 18%, rgba(245, 158, 11, 0.14), transparent 30%);
+    background-attachment: fixed;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: 'Sora', sans-serif;
+    letter-spacing: -0.02em;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply bg-primary hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200;
+    @apply bg-primary hover:bg-teal-700 text-white font-semibold py-2 px-4 rounded-xl transition-all duration-200 shadow-md hover:shadow-lg;
   }
+
   .btn-secondary {
-    @apply bg-surface hover:bg-slate-700 text-text font-semibold py-2 px-4 rounded-lg border border-slate-600 transition-colors duration-200;
+    @apply bg-surface hover:bg-surfaceElevated text-text font-semibold py-2 px-4 rounded-xl border border-slate-600 transition-all duration-200;
   }
+
   .card {
-    @apply bg-surface rounded-xl p-6 shadow-lg border border-slate-700;
+    @apply bg-surface rounded-2xl p-6 shadow-lg border border-slate-700/80;
   }
+
   .input-field {
     @apply w-full bg-slate-800 text-text border border-slate-600 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all;
+  }
+
+  .hero-panel {
+    @apply rounded-3xl border border-slate-700/70 bg-surface/70 backdrop-blur-md;
+  }
+
+  .shooting-sky {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.52;
+  }
+
+  .shooting-sky::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 35%, transparent 0%, rgba(8, 15, 28, 0.15) 70%, rgba(8, 15, 28, 0.35) 100%);
+  }
+
+  .twinkle-layer {
+    position: absolute;
+    inset: 0;
+  }
+
+  .ambient-star {
+    position: absolute;
+    width: var(--size);
+    height: var(--size);
+    border-radius: 999px;
+    background: rgba(190, 242, 255, var(--alpha));
+    box-shadow: 0 0 8px rgba(125, 211, 252, calc(var(--alpha) * 0.75));
+    animation: ambientFloat var(--duration) ease-in-out infinite;
+    animation-delay: var(--delay);
+  }
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.16;
+    transform: scale(0.9);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes ambientFloat {
+  0% {
+    opacity: calc(var(--alpha) * 0.45);
+    transform: translate3d(0, 0, 0) scale(0.92);
+  }
+  32% {
+    opacity: var(--alpha);
+    transform: translate3d(calc(var(--dx) * 0.65), calc(var(--dy) * 0.65), 0) scale(1.04);
+  }
+  68% {
+    opacity: calc(var(--alpha) * 0.65);
+    transform: translate3d(var(--dx), var(--dy), 0) scale(0.98);
+  }
+  100% {
+    opacity: calc(var(--alpha) * 0.42);
+    transform: translate3d(calc(var(--dx) * -0.35), calc(var(--dy) * -0.35), 0) scale(0.9);
   }
 }
