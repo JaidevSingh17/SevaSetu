@@ -281,7 +281,7 @@ const Home = () => {
               <div className="absolute left-[16%] bottom-[14%] h-3 w-3 rounded-full bg-emerald-300 shadow-[0_0_18px_rgba(16,185,129,0.8)]"></div>
               <div className="absolute right-[18%] bottom-[18%] h-2.5 w-2.5 rounded-full bg-cyan-200 shadow-[0_0_18px_rgba(103,232,249,0.7)]"></div>
 
-              <div className="absolute right-0 top-8 w-[22rem] rounded-3xl border border-teal-500/20 bg-[#0f1a31]/95 p-4 shadow-2xl shadow-cyan-950/30 backdrop-blur-md">
+              <div className="hidden lg:absolute right-0 top-8 w-[22rem] rounded-3xl border border-teal-500/20 bg-[#0f1a31]/95 p-4 shadow-2xl shadow-cyan-950/30 backdrop-blur-md">
                 <div className="grid grid-cols-[1fr_auto] gap-4">
                   <div>
                     <div className="mb-3 inline-flex rounded-xl bg-teal-500/15 p-3 text-teal-300">
@@ -308,7 +308,7 @@ const Home = () => {
                 </div>
               </div>
 
-              <div className="absolute right-0 top-[13.8rem] w-[22rem] rounded-3xl border border-amber-500/20 bg-[#0f1a31]/95 p-4 shadow-2xl shadow-amber-950/20 backdrop-blur-md">
+              <div className="hidden lg:absolute right-0 top-[13.8rem] w-[22rem] rounded-3xl border border-amber-500/20 bg-[#0f1a31]/95 p-4 shadow-2xl shadow-amber-950/20 backdrop-blur-md">
                 <div className="grid grid-cols-[auto_1fr_auto] items-center gap-4">
                   <div className="rounded-xl bg-amber-500/15 p-3 text-amber-300">
                     <HandHeart size={22} />
@@ -325,7 +325,7 @@ const Home = () => {
                 </div>
               </div>
 
-              <div className="absolute right-0 top-[27rem] w-[22rem] rounded-3xl border border-cyan-500/20 bg-[#0f1a31]/95 p-4 shadow-2xl shadow-cyan-950/30 backdrop-blur-md">
+              <div className="hidden lg:absolute right-0 top-[27rem] w-[22rem] rounded-3xl border border-cyan-500/20 bg-[#0f1a31]/95 p-4 shadow-2xl shadow-cyan-950/30 backdrop-blur-md">
                 <div className="grid grid-cols-[1fr_auto] gap-4">
                   <div>
                     <div className="mb-3 inline-flex rounded-xl bg-cyan-500/15 p-3 text-cyan-300">
