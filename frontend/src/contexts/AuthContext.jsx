@@ -1,5 +1,7 @@
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import { signInWithPopup } from 'firebase/auth';
+import { auth, googleProvider } from '../firebase';
 
 export const AuthContext = createContext();
 
@@ -44,13 +46,30 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const googleLogin = async () => {
+    try {
+      const result = await signInWithPopup(auth, googleProvider);
+      const idToken = await result.user.getIdToken();
+
+      const response = await axios.post(`${apiBaseUrl}/auth/google`, {
+        idToken,
+      });
+
+      setUser(response.data);
+      localStorage.setItem('user', JSON.stringify(response.data));
+      return { success: true };
+    } catch (error) {
+      return { success: false, message: error.response?.data?.message || error.message || 'Google sign-in failed' };
+    }
+  };
+
   const logout = () => {
     setUser(null);
     localStorage.removeItem('user');
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, register, logout, loading, apiBaseUrl }}>
+    <AuthContext.Provider value={{ user, login, register, googleLogin, logout, loading, apiBaseUrl }}>
       {!loading && children}
     </AuthContext.Provider>
   );

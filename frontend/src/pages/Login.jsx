@@ -1,14 +1,16 @@
 import React, { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { AuthContext } from '../contexts/AuthContext';
+import { LogIn, UserPlus } from 'lucide-react';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   
-  const { login } = useContext(AuthContext);
+  const { login, googleLogin } = useContext(AuthContext);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -23,6 +25,20 @@ const Login = () => {
       setError(result.message);
     }
     setLoading(false);
+  };
+
+  const handleGoogleLogin = async () => {
+    setError('');
+    setGoogleLoading(true);
+
+    const result = await googleLogin();
+    if (result.success) {
+      navigate('/dashboard');
+    } else {
+      setError(result.message);
+    }
+
+    setGoogleLoading(false);
   };
 
   return (
@@ -70,6 +86,25 @@ const Login = () => {
             {loading ? <span className="animate-pulse">Logging in...</span> : 'Log In'}
           </button>
         </form>
+
+        <div className="relative py-2">
+          <div className="absolute inset-0 flex items-center">
+            <div className="w-full border-t border-white/10"></div>
+          </div>
+          <div className="relative flex justify-center text-xs uppercase tracking-[0.2em] text-textMuted">
+            <span className="bg-slate-950 px-3">Or sign up with</span>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={handleGoogleLogin}
+          disabled={googleLoading}
+          className="flex w-full items-center justify-center gap-3 rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm font-medium text-text transition-colors hover:border-cyan-400/40 hover:bg-white/10 disabled:cursor-not-allowed disabled:opacity-70"
+        >
+          <UserPlus size={18} className="text-cyan-300" />
+          {googleLoading ? 'Connecting to Google...' : 'Sign up with Google'}
+        </button>
         
         <div className="text-center text-sm text-slate-400 mt-4">
           Don't have an account? <Link to="/register" className="text-primary hover:underline">Sign up</Link>
