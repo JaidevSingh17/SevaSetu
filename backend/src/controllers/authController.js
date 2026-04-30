@@ -20,6 +20,11 @@ const getFirebaseAdmin = () => {
   }
 
   const serviceAccount = JSON.parse(serviceAccountJson);
+  
+  // Fix for PEM private key newlines
+  if (serviceAccount.private_key) {
+    serviceAccount.private_key = serviceAccount.private_key.replace(/\\n/g, '\n');
+  }
 
   return admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),

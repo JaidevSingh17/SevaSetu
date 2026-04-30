@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 const Dashboard = () => {
   const { user, apiBaseUrl } = useContext(AuthContext);
   const [data, setData] = useState(null);
+  const [donations, setDonations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
@@ -20,11 +21,13 @@ const Dashboard = () => {
           const res = await axios.get(`${apiBaseUrl}/donations/donor`, config);
           setData(res.data);
         } else if (user.role === 'ngo') {
-          // Temporarily fetching all requirements to filter by this NGO, 
-          // Ideally a specific route /api/requirements/ngo shouldn't be too hard to add if we need
           const res = await axios.get(`${apiBaseUrl}/requirements`, config);
           const ngoReqs = res.data.filter(r => r.ngoId._id === user._id || r.ngoId === user._id);
           setData(ngoReqs);
+
+          // Fetch donations received by this NGO
+          const donRes = await axios.get(`${apiBaseUrl}/donations/ngo`, config);
+          setDonations(donRes.data);
         } else if (user.role === 'admin') {
           const res = await axios.get(`${apiBaseUrl}/admin/users`, config);
           setData(res.data);
@@ -134,6 +137,45 @@ const Dashboard = () => {
                 })}
               </div>
             ) : <p className="text-textMuted">You haven't posted any requirements yet.</p>}
+          </div>
+        </div>
+      )}
+
+      {user.role === 'ngo' && donations.length > 0 && (
+        <div className="mt-12 space-y-4">
+          <h2 className="text-xl font-semibold border-b border-slate-700 pb-2">Donors to Contact</h2>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {donations.map(donation => (
+              <div key={donation._id} className="card p-5 border border-teal-500/20 bg-teal-500/5 hover:border-teal-500/40 transition-all">
+                <div className="flex justify-between items-start mb-3">
+                  <div>
+                    <h3 className="font-bold text-lg text-text">{donation.donorId?.name || 'Anonymous Donor'}</h3>
+                    <p className="text-xs text-teal-400 font-medium uppercase tracking-tight">Pledged {donation.quantity_pledged} {donation.requirementId?.item}</p>
+                  </div>
+                  <span className={`px-2 py-1 text-[10px] rounded-full font-bold uppercase ${donation.status === 'Delivered' ? 'bg-green-500/20 text-green-400' : 'bg-amber-500/20 text-amber-400'}`}>
+                    {donation.status}
+                  </span>
+                </div>
+                
+                <div className="space-y-2 mt-4 pt-4 border-t border-white/5">
+                  <div className="flex items-center gap-2 text-sm text-textMuted">
+                    <span className="opacity-50 text-xs w-12">Email:</span>
+                    <span className="text-text truncate">{donation.donorId?.email}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-textMuted">
+                    <span className="opacity-50 text-xs w-12">Phone:</span>
+                    <span className="text-text">{donation.donorId?.phone || 'Not provided'}</span>
+                  </div>
+                </div>
+
+                <div className="mt-4 flex gap-2">
+                   <a href={`mailto:${donation.donorId?.email}`} className="btn-secondary py-1.5 px-3 text-xs flex-1 text-center">Email Donor</a>
+                   {donation.donorId?.phone && (
+                     <a href={`tel:${donation.donorId?.phone}`} className="btn-primary py-1.5 px-3 text-xs flex-1 text-center">Call Donor</a>
+                   )}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       )}

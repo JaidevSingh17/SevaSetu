@@ -46,9 +46,9 @@ const About = () => {
             <span className="mt-1 inline-flex rounded-xl bg-teal-500/15 p-2.5 text-teal-300 w-fit">
               <Lightbulb size={18} />
             </span>
-            <h2 className="mt-4 text-2xl font-semibold text-text">Founder's Note</h2>
+            <h2 className="mt-4 text-2xl font-semibold text-text">Our Vision</h2>
             <p className="mt-3 text-sm leading-7 text-textMuted">
-              I am the founder of SevaSetu. I created this platform with a simple belief: people want to help, but they
+              We are the founders of SevaSetu. We created this platform with a simple belief: people want to help, but they
               need a reliable way to find genuine needs and respond quickly. SevaSetu turns that intention into action
               by giving NGOs a clear way to post requirements and donors a transparent way to fulfill them.
             </p>
@@ -66,16 +66,25 @@ const About = () => {
               </Link>
             </div>
           </div>
-          <div className="flex items-center justify-center">
-            <div className="w-full max-w-sm rounded-3xl border border-teal-500/30 bg-gradient-to-br from-teal-500/15 to-cyan-500/10 p-8 shadow-lg shadow-teal-500/20">
-              <div className="mx-auto h-40 w-40 rounded-full bg-gradient-to-br from-teal-400 to-cyan-300 flex items-center justify-center text-6xl font-bold text-slate-900 shadow-lg">
-                JD
+        </div>
+
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {[
+            { name: 'Jaidev Singh', role: 'Founder & Visionary', initials: 'JS' },
+            { name: 'Shikshit Sharma', role: 'Founder & Visionary', initials: 'SS' },
+            { name: 'Shahid Ali', role: 'Founder & Visionary', initials: 'SA' },
+          ].map((member, index) => (
+            <div key={index} className="rounded-3xl border border-teal-500/20 bg-gradient-to-br from-teal-500/10 to-cyan-500/5 p-6 shadow-lg transition-all duration-300 hover:border-teal-500/40 hover:shadow-teal-500/10">
+              <div className="mx-auto h-24 w-24 rounded-full bg-gradient-to-br from-teal-400 to-cyan-300 flex items-center justify-center text-3xl font-bold text-slate-900 shadow-md">
+                {member.initials}
               </div>
-              <p className="mt-6 text-center text-lg font-semibold text-text">Jaidev Kumar</p>
-              <p className="mt-2 text-center text-sm text-cyan-300">Founder & Visionary</p>
-              <p className="mt-4 text-center text-xs leading-6 text-textMuted">Passionate about building community-driven solutions that create lasting impact through transparency and trust.</p>
+              <p className="mt-4 text-center text-lg font-semibold text-text">{member.name}</p>
+              <p className="text-center text-xs font-medium uppercase tracking-wider text-cyan-400">{member.role}</p>
+              <p className="mt-3 text-center text-xs leading-5 text-textMuted italic">
+                "Driven by the mission to create a transparent bridge for community support."
+              </p>
             </div>
-          </div>
+          ))}
         </div>
       </section>
     </main>

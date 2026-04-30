@@ -98,3 +98,23 @@ exports.updateDonationStatus = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+// @desc    View donations for an NGO
+// @route   GET /api/donations/ngo
+// @access  Private (NGO)
+exports.getNGODonations = async (req, res) => {
+  try {
+    // Find requirements for this NGO
+    const requirements = await Requirement.find({ ngoId: req.user._id });
+    const requirementIds = requirements.map(r => r._id);
+
+    // Find donations for these requirements
+    const donations = await Donation.find({ requirementId: { $in: requirementIds } })
+      .populate('donorId', 'name email phone')
+      .populate('requirementId', 'item')
+      .sort({ createdAt: -1 });
+    
+    res.json(donations);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
