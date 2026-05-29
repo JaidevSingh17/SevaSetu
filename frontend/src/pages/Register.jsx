@@ -10,7 +10,8 @@ const Register = () => {
     role: 'donor',
     description: '',
     address: '',
-    phone: ''
+    phone: '',
+    ngoDarpanId: ''
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -25,9 +26,26 @@ const Register = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    
+    if (formData.role === 'ngo') {
+      const trimmedId = formData.ngoDarpanId.trim();
+      if (!trimmedId) {
+        setError('NGO Darpan Unique ID is required.');
+        return;
+      }
+      if (!/^[A-Z]{2}\/\d{4}\/\d{7}$/i.test(trimmedId)) {
+        setError('Invalid NGO Darpan Unique ID format. Expected format: XX/YYYY/NNNNNNN (e.g. KA/2021/0123456)');
+        return;
+      }
+    }
+    
     setLoading(true);
     
-    const result = await register(formData);
+    const result = await register({
+      ...formData,
+      ngoDarpanId: formData.role === 'ngo' ? formData.ngoDarpanId.trim().toUpperCase() : undefined
+    });
+    
     if (result.success) {
       navigate('/dashboard');
     } else {
@@ -94,6 +112,20 @@ const Register = () => {
 
           {formData.role === 'ngo' && (
             <div className="space-y-4 pt-2 border-t border-slate-700 animate-fadeIn">
+              <div>
+                <label className="block text-sm font-medium text-slate-300 mb-1">NGO Darpan Unique ID</label>
+                <input 
+                  type="text" name="ngoDarpanId" required className="input-field placeholder-slate-500 uppercase" 
+                  placeholder="e.g. KA/2021/0123456"
+                  value={formData.ngoDarpanId} onChange={handleChange}
+                />
+                <p className="text-[10px] text-textMuted mt-1">
+                  Format must exactly match standard Indian NGO Darpan Unique ID (e.g. MH/2018/0123456).
+                </p>
+                {formData.ngoDarpanId && !/^[A-Z]{2}\/\d{4}\/\d{7}$/i.test(formData.ngoDarpanId) && (
+                  <p className="text-red-400 text-xs mt-1 animate-pulse">⚠️ Invalid NGO Darpan Unique ID format.</p>
+                )}
+              </div>
               <div>
                 <label className="block text-sm font-medium text-slate-300 mb-1">Description / Mission</label>
                 <textarea 

@@ -57,6 +57,21 @@ const Dashboard = () => {
     }
   };
 
+  const handleVerifyNGO = async (ngoId) => {
+    try {
+      const config = { headers: { Authorization: `Bearer ${user.token}` } };
+      await axios.patch(`${apiBaseUrl}/admin/verify-ngo/${ngoId}`, {}, config);
+      
+      // Update local state to reflect verification instantly
+      if (user.role === 'admin') {
+        setData(data.map(u => u._id === ngoId ? { ...u, isVerified: true } : u));
+      }
+      toast.success('NGO verified and activated successfully!');
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to verify NGO.');
+    }
+  };
+
   if (loading) return <div className="p-8 text-center animate-pulse">Loading dashboard...</div>;
 
   return (
@@ -66,41 +81,76 @@ const Dashboard = () => {
         <p className="text-textMuted capitalize">{user.role} Dashboard</p>
       </div>
 
+      {user.role === 'ngo' && !user.isVerified && (
+        <div className="mb-8 p-5 rounded-2xl border border-yellow-500/30 bg-yellow-500/5 text-yellow-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4 animate-fadeIn">
+          <div>
+            <h2 className="text-lg font-bold flex items-center gap-2 text-yellow-400">
+              ⚠️ NGO Verification Pending
+            </h2>
+            <p className="text-sm text-slate-300 mt-1 max-w-2xl">
+              Your profile is currently under review by our administrators. Your submitted NGO Darpan Unique ID is <strong className="text-yellow-300">{user.ngoDarpanId || 'Not Provided'}</strong>.
+              You will gain full access to request material aids once verified against the official government database.
+            </p>
+          </div>
+          <a 
+            href="https://ngodarpan.gov.in/" 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="btn-secondary py-2 px-4 text-xs font-semibold hover:bg-yellow-500/10 border-yellow-500/40 text-yellow-300 transition-all self-start sm:self-center shrink-0"
+          >
+            Visit NGO Darpan Official Site
+          </a>
+        </div>
+      )}
+
       {user.role === 'ngo' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="card h-fit lg:col-span-1">
             <h2 className="text-xl font-semibold mb-4">Post a Requirement</h2>
-            <form onSubmit={handleCreateRequirement} className="space-y-4">
-              <div>
-                <label className="block text-sm mb-1 text-slate-300">Item Name</label>
-                <input 
-                  type="text" className="input-field" value={newItem.item} required
-                  onChange={e => setNewItem({...newItem, item: e.target.value})}
-                  placeholder="e.g. Blankets"
-                />
+            {user.isVerified ? (
+              <form onSubmit={handleCreateRequirement} className="space-y-4">
+                <div>
+                  <label className="block text-sm mb-1 text-slate-300">Item Name</label>
+                  <input 
+                    type="text" className="input-field" value={newItem.item} required
+                    onChange={e => setNewItem({...newItem, item: e.target.value})}
+                    placeholder="e.g. Blankets"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm mb-1 text-slate-300">Quantity Needed</label>
+                  <input 
+                    type="number" min="1" className="input-field" value={newItem.quantity_required} required
+                    onChange={e => setNewItem({...newItem, quantity_required: e.target.value})}
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm mb-1 text-slate-300">Urgency</label>
+                  <select 
+                    className="input-field" value={newItem.urgency}
+                    onChange={e => setNewItem({...newItem, urgency: e.target.value})}
+                  >
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                  </select>
+                </div>
+                <button type="submit" className="btn-primary w-full" disabled={submitting}>
+                  {submitting ? 'Posting...' : 'Ask for Help'}
+                </button>
+              </form>
+            ) : (
+              <div className="text-center p-6 bg-slate-800/40 rounded-xl border border-slate-700/60 flex flex-col items-center justify-center space-y-3">
+                <div className="text-4xl text-slate-500">🔒</div>
+                <h3 className="text-sm font-semibold text-slate-300">Feature Locked</h3>
+                <p className="text-xs text-textMuted max-w-[220px] mx-auto">
+                  Requirement creation is disabled until your NGO identity is verified by the administrator.
+                </p>
+                <div className="px-3 py-1 bg-yellow-500/15 border border-yellow-500/30 text-yellow-400 rounded-full text-[10px] font-bold uppercase tracking-wider">
+                  Verification Pending
+                </div>
               </div>
-              <div>
-                <label className="block text-sm mb-1 text-slate-300">Quantity Needed</label>
-                <input 
-                  type="number" min="1" className="input-field" value={newItem.quantity_required} required
-                  onChange={e => setNewItem({...newItem, quantity_required: e.target.value})}
-                />
-              </div>
-              <div>
-                <label className="block text-sm mb-1 text-slate-300">Urgency</label>
-                <select 
-                  className="input-field" value={newItem.urgency}
-                  onChange={e => setNewItem({...newItem, urgency: e.target.value})}
-                >
-                  <option value="High">High</option>
-                  <option value="Medium">Medium</option>
-                  <option value="Low">Low</option>
-                </select>
-              </div>
-              <button type="submit" className="btn-primary w-full" disabled={submitting}>
-                {submitting ? 'Posting...' : 'Ask for Help'}
-              </button>
-            </form>
+            )}
           </div>
 
           <div className="lg:col-span-2 space-y-4">
@@ -230,6 +280,7 @@ const Dashboard = () => {
                     <th className="p-4">Name</th>
                     <th className="p-4">Role</th>
                     <th className="p-4">Email</th>
+                    <th className="p-4">NGO Darpan ID</th>
                     <th className="p-4">Status</th>
                   </tr>
                 </thead>
@@ -241,8 +292,57 @@ const Dashboard = () => {
                       <td className="p-4">{u.email}</td>
                       <td className="p-4">
                         {u.role === 'ngo' ? (
-                          u.isVerified ? <span className="text-green-400">Verified</span> : <span className="text-yellow-400 cursor-pointer hover:underline text-sm font-semibold border border-yellow-500/50 rounded px-2 py-1 bg-yellow-500/10">Approve</span>
-                        ) : 'N/A'}
+                          <div className="flex items-center gap-2">
+                            <code className="text-xs bg-slate-900 text-teal-400 font-mono px-2 py-0.5 rounded border border-slate-700">
+                              {u.ngoDarpanId || 'N/A'}
+                            </code>
+                            {u.ngoDarpanId && (
+                              <button 
+                                onClick={() => {
+                                  navigator.clipboard.writeText(u.ngoDarpanId);
+                                  toast.success('Copied NGO Darpan ID!');
+                                }}
+                                className="hover:opacity-80 text-xs cursor-pointer"
+                                title="Copy ID"
+                              >
+                                📋
+                              </button>
+                            )}
+                          </div>
+                        ) : (
+                          <span className="text-slate-500">-</span>
+                        )}
+                      </td>
+                      <td className="p-4">
+                        {u.role === 'ngo' ? (
+                          u.isVerified ? (
+                            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-green-500/10 text-green-400 border border-green-500/20">
+                              ✓ Verified
+                            </span>
+                          ) : (
+                            <div className="flex items-center gap-3">
+                              <button 
+                                onClick={() => handleVerifyNGO(u._id)}
+                                className="text-yellow-400 hover:text-yellow-300 font-semibold border border-yellow-500/50 hover:border-yellow-500 rounded px-2.5 py-1 bg-yellow-500/10 hover:bg-yellow-500/20 text-xs transition-all shadow-sm cursor-pointer"
+                              >
+                                Approve NGO
+                              </button>
+                              {u.ngoDarpanId && (
+                                <a 
+                                  href={`https://ngodarpan.gov.in/index.php/search/`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-xs text-cyan-400 hover:underline hover:text-cyan-300 transition-all font-medium"
+                                  title="Open NGO Darpan to verify identity"
+                                >
+                                  Verify on Darpan ↗
+                                </a>
+                              )}
+                            </div>
+                          )
+                        ) : (
+                          <span className="text-slate-500 text-xs">Donor Account</span>
+                        )}
                       </td>
                     </tr>
                   ))}

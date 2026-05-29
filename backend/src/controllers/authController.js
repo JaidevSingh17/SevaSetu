@@ -36,11 +36,20 @@ const getFirebaseAdmin = () => {
 // @access  Public
 exports.registerUser = async (req, res) => {
   try {
-    const { name, email, password, role, description, address, phone } = req.body;
+    const { name, email, password, role, description, address, phone, ngoDarpanId } = req.body;
 
     const userExists = await User.findOne({ email });
     if (userExists) {
       return res.status(400).json({ message: 'User already exists' });
+    }
+
+    if (role === 'ngo') {
+      if (!ngoDarpanId) {
+        return res.status(400).json({ message: 'NGO Darpan Unique ID is required for NGO registration' });
+      }
+      if (!/^[A-Z]{2}\/\d{4}\/\d{7}$/i.test(ngoDarpanId)) {
+        return res.status(400).json({ message: 'Invalid NGO Darpan Unique ID format. Expected format: XX/YYYY/NNNNNNN (e.g. KA/2021/0123456)' });
+      }
     }
 
     const user = await User.create({
@@ -50,7 +59,8 @@ exports.registerUser = async (req, res) => {
       role,
       description,
       address,
-      phone
+      phone,
+      ngoDarpanId: role === 'ngo' ? ngoDarpanId.toUpperCase() : undefined
     });
 
     if (user) {

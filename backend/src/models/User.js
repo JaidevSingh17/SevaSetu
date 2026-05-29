@@ -31,6 +31,17 @@ const userSchema = new mongoose.Schema({
   description: String,
   address: String,
   phone: String,
+  ngoDarpanId: {
+    type: String,
+    validate: {
+      validator: function(v) {
+        if (this.role !== 'ngo') return true;
+        if (!v) return true; // Allow undefined/null for legacy user updates
+        return /^[A-Z]{2}\/\d{4}\/\d{7}$/i.test(v);
+      },
+      message: props => `${props.value} is not a valid NGO Darpan Unique ID! Format must be XX/YYYY/NNNNNNN`
+    }
+  },
 }, { timestamps: true });
 
 // Hash password before saving

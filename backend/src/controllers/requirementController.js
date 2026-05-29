@@ -20,6 +20,10 @@ exports.createRequirement = async (req, res) => {
   try {
     const { item, quantity_required, urgency } = req.body;
 
+    if (req.user.role === 'ngo' && !req.user.isVerified) {
+      return res.status(403).json({ message: 'Your NGO account is pending verification. You cannot post material requirements until your NGO Darpan Unique ID is approved by the platform administrator.' });
+    }
+
     const requirement = await Requirement.create({
       ngoId: req.user._id,
       item,
